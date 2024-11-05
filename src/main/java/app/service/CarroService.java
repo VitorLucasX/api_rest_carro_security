@@ -16,12 +16,28 @@ public class CarroService {
 
     // inserir carro
     public String save(Carro carro) {
+
+        //REGRA DE NEGÓCIO DE VALIDAÇÃO DO NOME DO CARRO
+        this.verificarNomeCarro(carro.getName(), carro.getAno());
+
         this.carroRepository.save(carro);
         return "Carro salvo com sucesso!";
     }
 
+    // verificar se o carro que está sendo inserido é um Jeep Compass do ano menor que 2006
+    public boolean verificarNomeCarro(String nome, int ano){
+        if(nome.equals("Jeep Compass") && ano < 2006)
+            throw new RuntimeException();
+
+        return true;
+    }
+
     // alterar carro
     public String update(Carro carro, long id) {
+
+        //REGRA DE NEGÓCIO DE VALIDAÇÃO DO NOME DO CARRO
+        this.verificarNomeCarro(carro.getName(), carro.getAno());
+
         carro.setId(id);
         this.carroRepository.save(carro);
         return "Carro alterado com sucesso!";

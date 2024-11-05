@@ -6,25 +6,28 @@ import app.service.CarroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/carro")
+@CrossOrigin("http://localhost:4200")
 public class CarroController {
 
     @Autowired
     private CarroService carroService;
 
     // inserir carro
+    @PreAuthorize("hasRole('ADMIN') OR hasRole('USER')")
     @PostMapping("/inserir")
     public ResponseEntity<String> save(@RequestBody Carro carro) {
         try {
             String mensagem = this.carroService.save(carro);
             return new ResponseEntity<>(mensagem, HttpStatus.CREATED);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<String>("Deu esse erro aqui: "+e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -51,6 +54,7 @@ public class CarroController {
     }
 
     // listar todos carros
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/listar")
     public ResponseEntity<List<Carro>> findAll() {
         try {
@@ -84,6 +88,7 @@ public class CarroController {
     }
 
     // buscar carro por marca
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/findByMarca")
     public ResponseEntity<List<Carro>> findByMarca(@RequestParam Long idMarca) {
         try {
